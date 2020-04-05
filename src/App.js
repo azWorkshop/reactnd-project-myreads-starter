@@ -1,24 +1,12 @@
 import React from 'react'
-// import * as BooksAPI from './BooksAPI'
+import * as BooksAPI from './BooksAPI'
 import './App.css'
 import SearchBooks from './components/SearchBooks'
 import Bookshelf from './components/Bookshelf'
 
-const books = [
-  {
-    title: "Book Title",
-    author: "Book Author",
-    cover: "http://books.google.com/books/content?id=PGR2AwAAQBAJ&printsec=frontcover&img=1&zoom=1&imgtk=AFLRE73-GnPVEyb7MOCxDzOYF1PTQRuf6nCss9LMNOSWBpxBrz8Pm2_mFtWMMg_Y1dx92HT7cUoQBeSWjs3oEztBVhUeDFQX6-tWlWz1-feexS0mlJPjotcwFqAg6hBYDXuK_bkyHD-y&source=gbs_api"
-  },
-  {
-    title: "Book Title2",
-    author: "Book Author2",
-    cover: "http://books.google.com/books/content?id=yDtCuFHXbAYC&printsec=frontcover&img=1&zoom=1&imgtk=AFLRE72RRiTR6U5OUg3IY_LpHTL2NztVWAuZYNFE8dUuC0VlYabeyegLzpAnDPeWxE6RHi0C2ehrR9Gv20LH2dtjpbcUcs8YnH5VCCAH0Y2ICaKOTvrZTCObQbsfp4UbDqQyGISCZfGN&source=gbs_api"
-  }
-]
-
 class BooksApp extends React.Component {
   state = {
+    books: [],
     /**
      * TODO: Instead of using this state variable to keep track of which page
      * we're on, use the URL in the browser's address bar. This will ensure that
@@ -28,15 +16,22 @@ class BooksApp extends React.Component {
     showSearchPage: false
   }
 
-  componentDidMount
+  componentDidMount = () => {
+    BooksAPI.getAll()
+      .then((data) => {
+        this.setState({ books: data });
+      })
+  }
+
+  getBooksForShelf = (shelf) => {
+    return this.state.books.filter(book => book.shelf === shelf);
+  }
 
   render() {
     return (
       <div className="app">
         {this.state.showSearchPage
-          ? (
-            <SearchBooks />
-          )
+          ? <SearchBooks />
           : (
             <div className="list-books">
               <div className="list-books-title">
@@ -44,9 +39,9 @@ class BooksApp extends React.Component {
               </div>
               <div className="list-books-content">
                 <div>
-                  <Bookshelf name="Currently Reading" books={books} />
-                  <Bookshelf name="Want to Read" books={books} />
-                  <Bookshelf name="Read" books={books} />
+                  <Bookshelf name="Currently Reading" books={this.getBooksForShelf("currentlyReading")} />
+                  <Bookshelf name="Want to Read" books={this.getBooksForShelf("wantToRead")} />
+                  <Bookshelf name="Read" books={this.getBooksForShelf("read")} />
                 </div>
               </div>
               <div className="open-search">
