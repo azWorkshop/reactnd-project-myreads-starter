@@ -7,8 +7,7 @@ import { Link, Route } from 'react-router-dom'
 
 class BooksApp extends React.Component {
   state = {
-    books: [],
-    updatedBookShelf: null
+    books: []
   }
 
   componentDidMount = () => {
@@ -23,9 +22,16 @@ class BooksApp extends React.Component {
   }
 
   handleShelfChanged = (book, event) => {
-    const changedBook = this.state.books.find(b => b === book);
-    changedBook.shelf = event.target.value;
-    this.setState({ updatedBookShelf: changedBook });
+    const newShelf = event.target.value;
+    BooksAPI.update(book, newShelf)
+    .then((data) => {
+      this.setState(currentState => {
+        const changedBook =
+          currentState.books.find(currentBook => currentBook === book);
+        changedBook.shelf = newShelf;
+        return currentState.books;
+      });
+    });
   }
 
   render() {
@@ -53,11 +59,11 @@ class BooksApp extends React.Component {
               </div>
             </div>
             <div className="open-search">
-              <Link to='/add' className="open-search-button">Add a book</Link>
+              <Link to='/search' className="open-search-button">Add a book</Link>
             </div>
           </div>
         )} />
-        <Route path='/add' component={SearchBooks} />
+        <Route path='/search' component={SearchBooks} />
       </div>
     )
   }
