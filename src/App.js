@@ -11,6 +11,10 @@ class BooksApp extends React.Component {
   }
 
   componentDidMount = () => {
+    this.getBooks();
+  }
+
+  getBooks = () => {
     BooksAPI.getAll()
       .then((data) => {
         this.setState({ books: data });
@@ -24,14 +28,18 @@ class BooksApp extends React.Component {
   handleShelfChanged = (book, event) => {
     const newShelf = event.target.value;
     BooksAPI.update(book, newShelf)
-    .then((data) => {
-      this.setState(currentState => {
-        const changedBook =
-          currentState.books.find(currentBook => currentBook === book);
-        changedBook.shelf = newShelf;
-        return currentState.books;
+      .then((data) => {
+        this.setState(currentState => {
+          const changedBook =
+            currentState.books.find(currentBook => currentBook === book);
+          changedBook.shelf = newShelf;
+          return currentState.books;
+        });
       });
-    });
+  }
+
+  getNewBooks = () => {
+    this.getBooks();
   }
 
   render() {
@@ -63,7 +71,9 @@ class BooksApp extends React.Component {
             </div>
           </div>
         )} />
-        <Route path='/search' component={SearchBooks} />
+        <Route path='/search' render={() => (
+          <SearchBooks onSearchedBookChanged={this.getNewBooks}/> 
+        )}/>
       </div>
     )
   }

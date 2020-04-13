@@ -12,7 +12,7 @@ class Book extends React.Component {
                         style={{
                             width: 128, 
                             height: 193,
-                            backgroundImage: `url(${book.imageLinks.smallThumbnail})`
+                            backgroundImage: `url(${book.imageLinks?.smallThumbnail})`
                         }}>
                     </div>
                     <BookShelfChanger book={book} onShelfChanged={onShelfChanged} />
