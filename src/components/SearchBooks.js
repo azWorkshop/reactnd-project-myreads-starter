@@ -57,7 +57,7 @@ class SearchBooks extends React.Component {
                 </div>
                 <div className="search-books-results">
                     <ol className="books-grid">
-                        {query !== "" &&
+                        {(query !== "" && findBooks) &&
                             findBooks?.map(book => (
                                 <li key={book.id}>
                                     <Book book={book} onShelfChanged={this.handleShelfChanged} />

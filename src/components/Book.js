@@ -5,6 +5,7 @@ class Book extends React.Component {
 
     render() {
         const { book, onShelfChanged } = this.props;
+        const smallThumbnail = book.imageLinks ? book.imageLinks?.smallThumbnail : null;
         return (
             <div className="book">
                 <div className="book-top">
@@ -12,7 +13,7 @@ class Book extends React.Component {
                         style={{
                             width: 128, 
                             height: 193,
-                            backgroundImage: `url(${book.imageLinks?.smallThumbnail})`
+                            backgroundImage: `url(${smallThumbnail})`
                         }}>
                     </div>
                     <BookShelfChanger book={book} onShelfChanged={onShelfChanged} />
