@@ -9,12 +9,31 @@ class SearchBooks extends React.Component {
         query: ""
     }
 
+    isBookWithShelf(element, shelfedBook) {
+        return (element.title === shelfedBook.title && element.subtitle === shelfedBook.subtitle);
+    }
+
+    assignShelves = (searchResult) => {
+        const booksOnShelves = this.props.booksOnShelves;
+        booksOnShelves.forEach(book => {
+            const bookToUpdate = searchResult.find(result => this.isBookWithShelf(result, book));
+            if (bookToUpdate) {
+                bookToUpdate.shelf = book.shelf;
+            }
+        });
+        return searchResult;
+    }
+
     findBooks = (query) => {
         if (query !== "") {
             BooksAPI.search(query)
                 .then(data => {
+                    const result = data instanceof Array ? data : []; 
+                    if (result.length > 0) {
+                        this.assignShelves(result)
+                    }
                     this.setState(() => ({
-                        findBooks: data instanceof Array ? data : []
+                        findBooks: result
                     }))
                 });
         }
@@ -50,7 +69,7 @@ class SearchBooks extends React.Component {
                         <input
                             type="text"
                             placeholder="Search by title or author"
-                            value={this.state.query}
+                            value={query}
                             onChange={(event) => this.updateQuery(event.target.value)}
                         />
                     </div>

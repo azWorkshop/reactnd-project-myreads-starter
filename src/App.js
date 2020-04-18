@@ -14,11 +14,9 @@ class BooksApp extends React.Component {
     this.getBooks();
   }
 
-  getBooks = () => {
-    BooksAPI.getAll()
-      .then((data) => {
-        this.setState({ books: data });
-      })
+  async getBooks() {
+    const books = await BooksAPI.getAll();
+    this.setState({ books });
   }
 
   getBooksForShelf = (shelf) => {
@@ -72,8 +70,8 @@ class BooksApp extends React.Component {
           </div>
         )} />
         <Route path='/search' render={() => (
-          <SearchBooks onSearchedBookChanged={this.getNewBooks}/> 
-        )}/>
+          <SearchBooks booksOnShelves={this.state.books} onSearchedBookChanged={this.getNewBooks} />
+        )} />
       </div>
     )
   }
